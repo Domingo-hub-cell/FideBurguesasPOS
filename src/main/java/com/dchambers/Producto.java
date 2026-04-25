@@ -15,13 +15,40 @@ public class Producto {
         this.disponible = disponible;
     }
 
-    public void actualizarPrecio(double nuevoPrecio) { if (nuevoPrecio >= 0) precio = nuevoPrecio; }
-    public void cambiarDisponibilidad(boolean disponible) { this.disponible = disponible; }
-    public double calcularPrecio() { return precio; }
-    public int getIdProducto() { return idProducto; }
-    public String getNombre() { return nombre; }
-    public double getPrecio() { return precio; }
-    public String getTipo() { return tipo; }
-    public boolean isDisponible() { return disponible; }
-    @Override public String toString() { return nombre + " - ₡" + String.format("%,.2f", calcularPrecio()); }
+    public void actualizarPrecio(double nuevoPrecio) {
+        if (nuevoPrecio >= 0) precio = nuevoPrecio;
+    }
+
+    public void cambiarDisponibilidad(boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    public double calcularPrecio() {
+        return precio;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " - ₡" + String.format("%,.2f", calcularPrecio());
+    }
 }

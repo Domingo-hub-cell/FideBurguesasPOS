@@ -60,8 +60,11 @@ public class BaseDatos {
     public static Usuario autenticar(String username, String password) throws SQLException {
         String sql = "SELECT * FROM usuarios WHERE username=? AND password=?";
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, username); ps.setString(2, password);
-            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? mapUsuario(rs) : null; }
+            ps.setString(1, username);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? mapUsuario(rs) : null;
+            }
         }
     }
 
@@ -86,7 +89,12 @@ public class BaseDatos {
     private static void registrarUsuarioSinNotificar(String nombre, String username, String password, String rol, String sucursal) throws SQLException {
         String sql = "INSERT INTO usuarios(nombre, username, password, rol, sucursal) VALUES(?,?,?,?,?)";
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, nombre); ps.setString(2, username); ps.setString(3, password); ps.setString(4, rol.toUpperCase()); ps.setString(5, sucursal); ps.executeUpdate();
+            ps.setString(1, nombre);
+            ps.setString(2, username);
+            ps.setString(3, password);
+            ps.setString(4, rol.toUpperCase());
+            ps.setString(5, sucursal);
+            ps.executeUpdate();
         }
     }
 
@@ -102,7 +110,11 @@ public class BaseDatos {
     private static void registrarProductoSinNotificar(String nombre, double precio, String tipo, boolean disponible) throws SQLException {
         String sql = "INSERT INTO productos(nombre, precio, tipo, disponible) VALUES(?,?,?,?)";
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, nombre); ps.setDouble(2, precio); ps.setString(3, tipo); ps.setInt(4, disponible ? 1 : 0); ps.executeUpdate();
+            ps.setString(1, nombre);
+            ps.setDouble(2, precio);
+            ps.setString(3, tipo);
+            ps.setInt(4, disponible ? 1 : 0);
+            ps.executeUpdate();
         }
     }
 
@@ -131,24 +143,44 @@ public class BaseDatos {
                 int idOrden;
                 String fecha = LocalDateTime.now().toString();
                 try (PreparedStatement ps = cn.prepareStatement("INSERT INTO ordenes(fecha, id_cajero, cliente, estado) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setString(1, fecha); ps.setInt(2, cajero.getIdUsuario()); ps.setString(3, cliente); ps.setString(4, "PENDIENTE"); ps.executeUpdate();
-                    try (ResultSet keys = ps.getGeneratedKeys()) { keys.next(); idOrden = keys.getInt(1); }
+                    ps.setString(1, fecha);
+                    ps.setInt(2, cajero.getIdUsuario());
+                    ps.setString(3, cliente);
+                    ps.setString(4, "PENDIENTE");
+                    ps.executeUpdate();
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        keys.next();
+                        idOrden = keys.getInt(1);
+                    }
                 }
                 try (PreparedStatement ps = cn.prepareStatement("INSERT INTO orden_detalle(id_orden, id_producto, nombre_producto, precio, tipo) VALUES(?,?,?,?,?)")) {
                     for (Producto p : productos) {
-                        ps.setInt(1, idOrden); ps.setInt(2, p.getIdProducto()); ps.setString(3, p.getNombre()); ps.setDouble(4, p.calcularPrecio()); ps.setString(5, p.getTipo()); ps.addBatch();
+                        ps.setInt(1, idOrden);
+                        ps.setInt(2, p.getIdProducto());
+                        ps.setString(3, p.getNombre());
+                        ps.setDouble(4, p.calcularPrecio());
+                        ps.setString(5, p.getTipo());
+                        ps.addBatch();
                     }
                     ps.executeBatch();
                 }
                 cn.commit();
                 notificarCambio("ORDENES");
                 return getOrdenPorId(idOrden);
-            } catch (Exception ex) { cn.rollback(); throw ex; }
+            } catch (Exception ex) {
+                cn.rollback();
+                throw ex;
+            }
         }
     }
 
-    public static List<Orden> getOrdenes() throws SQLException { return consultarOrdenes("SELECT o.*, u.nombre, u.username, u.password, u.rol, u.sucursal FROM ordenes o JOIN usuarios u ON o.id_cajero=u.id_usuario ORDER BY o.id_orden DESC"); }
-    public static List<Orden> getOrdenesPendientes() throws SQLException { return consultarOrdenes("SELECT o.*, u.nombre, u.username, u.password, u.rol, u.sucursal FROM ordenes o JOIN usuarios u ON o.id_cajero=u.id_usuario WHERE o.estado <> 'ENTREGADO' ORDER BY o.id_orden DESC"); }
+    public static List<Orden> getOrdenes() throws SQLException {
+        return consultarOrdenes("SELECT o.*, u.nombre, u.username, u.password, u.rol, u.sucursal FROM ordenes o JOIN usuarios u ON o.id_cajero=u.id_usuario ORDER BY o.id_orden DESC");
+    }
+
+    public static List<Orden> getOrdenesPendientes() throws SQLException {
+        return consultarOrdenes("SELECT o.*, u.nombre, u.username, u.password, u.rol, u.sucursal FROM ordenes o JOIN usuarios u ON o.id_cajero=u.id_usuario WHERE o.estado <> 'ENTREGADO' ORDER BY o.id_orden DESC");
+    }
 
     private static List<Orden> consultarOrdenes(String sql) throws SQLException {
         List<Orden> ordenes = new ArrayList<>();
@@ -162,7 +194,9 @@ public class BaseDatos {
         String sql = "SELECT o.*, u.nombre, u.username, u.password, u.rol, u.sucursal FROM ordenes o JOIN usuarios u ON o.id_cajero=u.id_usuario WHERE o.id_orden=?";
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, idOrden);
-            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? mapOrden(rs, cn) : null; }
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? mapOrden(rs, cn) : null;
+            }
         }
     }
 
@@ -184,7 +218,9 @@ public class BaseDatos {
 
     public static void actualizarEstadoOrden(int idOrden, String estado) throws SQLException {
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement("UPDATE ordenes SET estado=? WHERE id_orden=?")) {
-            ps.setString(1, estado); ps.setInt(2, idOrden); ps.executeUpdate();
+            ps.setString(1, estado);
+            ps.setInt(2, idOrden);
+            ps.executeUpdate();
         }
         notificarCambio("ORDENES");
     }
@@ -196,8 +232,16 @@ public class BaseDatos {
         String sql = "INSERT INTO facturas(id_orden, subtotal, impuesto, total, fecha) VALUES(?,?,?,?,?)";
         int idFactura;
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, orden.getIdOrden()); ps.setDouble(2, factura.getSubtotal()); ps.setDouble(3, factura.getImpuesto()); ps.setDouble(4, factura.getTotal()); ps.setString(5, LocalDateTime.now().toString()); ps.executeUpdate();
-            try (ResultSet keys = ps.getGeneratedKeys()) { keys.next(); idFactura = keys.getInt(1); }
+            ps.setInt(1, orden.getIdOrden());
+            ps.setDouble(2, factura.getSubtotal());
+            ps.setDouble(3, factura.getImpuesto());
+            ps.setDouble(4, factura.getTotal());
+            ps.setString(5, LocalDateTime.now().toString());
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                keys.next();
+                idFactura = keys.getInt(1);
+            }
         }
         notificarCambio("FACTURAS");
         return new Factura(idFactura, orden);
@@ -206,11 +250,17 @@ public class BaseDatos {
     private static Integer facturaExistente(int idOrden) throws SQLException {
         try (Connection cn = conectar(); PreparedStatement ps = cn.prepareStatement("SELECT id_factura FROM facturas WHERE id_orden=?")) {
             ps.setInt(1, idOrden);
-            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? rs.getInt(1) : null; }
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : null;
+            }
         }
     }
 
-    public static MonitorCocina getMonitorCocina() { return monitorCocina; }
+    public static MonitorCocina getMonitorCocina() {
+        return monitorCocina;
+    }
 
-    private static void notificarCambio(String area) { RedCliente.getInstancia().enviar("REFRESH:" + area); }
+    private static void notificarCambio(String area) {
+        RedCliente.getInstancia().enviar("REFRESH:" + area);
+    }
 }

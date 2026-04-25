@@ -15,13 +15,40 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public boolean validarCredenciales(String user, String pass) { return username.equals(user) && password.equals(pass); }
-    public void login() { System.out.println(nombre + " inició sesión."); }
-    public void logout() { System.out.println(nombre + " cerró sesión."); }
-    public int getIdUsuario() { return idUsuario; }
-    public String getNombre() { return nombre; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getRol() { return rol; }
-    @Override public String toString() { return nombre + " (" + rol + ")"; }
+    public boolean validarCredenciales(String user, String pass) {
+        return username.equals(user) && password.equals(pass);
+    }
+
+    public void login() {
+        System.out.println(nombre + " inició sesión.");
+    }
+
+    public void logout() {
+        System.out.println(nombre + " cerró sesión.");
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + rol + ")";
+    }
 }

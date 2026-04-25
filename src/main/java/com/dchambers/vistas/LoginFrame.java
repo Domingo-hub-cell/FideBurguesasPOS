@@ -9,7 +9,7 @@ import java.awt.*;
 public class LoginFrame extends JFrame {
     public LoginFrame() {
         setTitle("FideBurguesas - Iniciar Sesión");
-        setSize(900, 600);
+        setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -24,11 +24,11 @@ public class LoginFrame extends JFrame {
         card.setBorder(new EmptyBorder(30, 32, 30, 32));
 
         JLabel titleLabel = new JLabel("Iniciar Sesión");
-        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 36));
         titleLabel.setForeground(Color.WHITE);
-        JLabel subtitleLabel = new JLabel("FideBurguesas POS | SQLite + Sockets");
-        subtitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel subtitleLabel = new JLabel("FideBurguesas POS");
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitleLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
         subtitleLabel.setForeground(new Color(180, 185, 210));
 
@@ -45,7 +45,8 @@ public class LoginFrame extends JFrame {
         JLabel demo = new JLabel("cajero/admin/cocina | contraseña: 1234");
         demo.setForeground(new Color(190, 195, 215));
         demo.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        demo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //demo.setMinimumSize(new Dimension(0, 20));
+        demo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         btnIngresar.addActionListener(e -> ingresar(txtUsuario.getText().trim(), new String(txtContrasena.getPassword()).trim()));
         txtContrasena.addActionListener(e -> ingresar(txtUsuario.getText().trim(), new String(txtContrasena.getPassword()).trim()));

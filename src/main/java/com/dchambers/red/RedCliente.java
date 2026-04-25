@@ -12,7 +12,9 @@ public class RedCliente {
     private PrintWriter salida;
     private boolean conectado;
 
-    public static RedCliente getInstancia() { return INSTANCIA; }
+    public static RedCliente getInstancia() {
+        return INSTANCIA;
+    }
 
     public synchronized void conectar() {
         if (conectado) return;
@@ -48,6 +50,11 @@ public class RedCliente {
         if (salida != null) salida.println(mensaje);
     }
 
-    public void agregarObservador(Runnable observador) { observadores.add(observador); }
-    public void removerObservador(Runnable observador) { observadores.remove(observador); }
+    public void agregarObservador(Runnable observador) {
+        observadores.add(observador);
+    }
+
+    public void removerObservador(Runnable observador) {
+        observadores.remove(observador);
+    }
 }

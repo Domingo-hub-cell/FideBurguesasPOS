@@ -20,7 +20,11 @@ public class RedServidor {
         }, "Servidor-FideBurguesas");
         t.setDaemon(true);
         t.start();
-        try { Thread.sleep(250); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private static void atender(Socket socket) {
